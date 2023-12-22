@@ -19,8 +19,6 @@ public class CustomizedAuthorRepositoryImpl implements CustomizedAuthorRepositor
         query.setFirstResult((pageNumber) * pageSize);
         query.setMaxResults(pageSize);
 
-        List<Author> result = query.getResultList();
-
-        return result;
+        return query.getResultList();
     }
 }

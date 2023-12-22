@@ -18,7 +18,7 @@ public interface PublisherRepository extends JpaRepository<Publisher, Long> {
                             a.city,
                             a.country)
             FROM Publisher p
-                 LEFT OUTER JOIN PublisherAddress a 
+                 LEFT OUTER JOIN PublisherAddress a
                         ON a.publisherAddressId = p.publisherAddress.publisherAddressId
     """)
     List<PublisherDTO> findPublisher();
