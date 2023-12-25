@@ -13,42 +13,42 @@ public interface PublisherRepository extends JpaRepository<Publisher, Long> {
 
     @Query("""
             SELECT NEW com.codexsoft.bookdatabank.model.dto.PublisherDTO(
-                            p.publisherId,
+                            p.id,
                             p.name,
                             a.address,
                             a.city,
                             a.country)
             FROM Publisher p
                  LEFT OUTER JOIN PublisherAddress a
-                        ON a.publisherAddressId = p.publisherAddress.publisherAddressId
+                        ON a.id = p.publisherAddress.id
     """)
     List<PublisherDTO> findPublisher();
 
     @Query("""
             SELECT NEW com.codexsoft.bookdatabank.model.dto.PublisherDTO(
-                            p.publisherId,
+                            p.id,
                             p.name,
                             a.address,
                             a.city,
                             a.country)
               FROM Publisher p
                 LEFT OUTER JOIN PublisherAddress a
-                        ON a.publisherAddressId = p.publisherAddress.publisherAddressId
-             WHERE p.publisherId = :publisherId
+                        ON a.id = p.publisherAddress.id
+             WHERE p.id = :publisherId
     """)
     Optional<PublisherDTO> findPublisher(Long publisherId);
 
     @Query("""
             SELECT NEW com.codexsoft.bookdatabank.model.dto.PublisherBookDTO(
-                            p.publisherId,
+                            p.id,
                             p.name,
-                            b.bookId,
+                            b.id,
                             b.title,
                             b.coverImageUrl)
               FROM Publisher p
                 INNER JOIN Book b
-                        ON b.publisher.publisherId = p.publisherId
-             WHERE p.publisherId = :publisherId
+                        ON b.publisher.id = p.id
+             WHERE p.id = :publisherId
     """)
     List<PublisherBookDTO> findPublisherBooks(Long publisherId);
 }

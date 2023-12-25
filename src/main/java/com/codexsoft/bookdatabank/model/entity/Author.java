@@ -11,7 +11,7 @@ import lombok.Setter;
 public class Author extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long authorId;
+    private Long id;
     private String name;
     private String surname;
     private String about;

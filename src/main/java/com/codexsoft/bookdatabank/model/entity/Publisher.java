@@ -11,7 +11,7 @@ import lombok.Setter;
 public class Publisher extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long publisherId;
+    private Long id;
     private String name;
 
     @OneToOne(cascade = CascadeType.ALL)

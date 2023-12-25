@@ -18,40 +18,40 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
 
     @Query(value = """
             SELECT NEW com.codexsoft.bookdatabank.model.dto.PublisherDTO(
-                            p.publisherId,
+                            p.id,
                             p.name,
                             a.address,
                             a.city,
                             a.country)
                   FROM Publisher p
                         LEFT OUTER JOIN PublisherAddress a
-                            ON a.publisherAddressId = p.publisherAddress.publisherAddressId
+                            ON a.id = p.publisherAddress.id
                         INNER JOIN Book b
-                            ON b.publisher.publisherId = p.publisherId
-                 WHERE b.bookId = :bookId
+                            ON b.publisher.id = p.id
+                 WHERE b.id = :bookId
             """)
     Optional<PublisherDTO> findBookPublisher(Long bookId);
 
 
     @Query(value = """
-            SELECT p.publisherId AS publisherId,
+            SELECT p.id AS publisherId,
                    p.name AS publisherName,
-                   b.bookId AS bookId,
+                   b.id AS bookId,
                    b.title AS bookTitle,
                    b.isbn AS isbn,
                    b.language AS language,
                    b.printLength AS printLength,
                    b.publicationDate AS publicationDate,
                    b.coverImageUrl AS coverImageUrl,
-                   ba.authorId AS authorId,
+                   ba.id AS authorId,
                    ba.name AS authorName,
                    ba.surname AS authorSurname,
                    ba.about AS authorAbout
               FROM Book b
                     LEFT JOIN b.authors ba
                     LEFT JOIN Publisher p
-                            ON p.publisherId = b.publisher.publisherId
-             WHERE b.bookId = :bookId
+                            ON p.id = b.publisher.id
+             WHERE b.id = :bookId
         """)
     List<Tuple> findBookDetailInternal(Long bookId);
 
@@ -101,7 +101,7 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
                             COALESCE(booksAuthors.authors, 'UNSPECIFIED'))
               FROM Book b
                 LEFT JOIN Publisher p
-                        ON p.publisherId = b.publisher.publisherId
+                        ON p.id = b.publisher.id
                 LEFT JOIN LATERAL (
                                     SELECT LISTAGG(ba.name || ' ' || ba.surname, ', ') AS authors
                                       FROM b.authors ba

@@ -1,6 +1,6 @@
 CREATE TABLE publisher_addresses
 (
-    publisher_address_id bigserial primary key,
+    id bigserial primary key,
     address varchar(500),
     city varchar(100),
     country varchar(100),
@@ -10,21 +10,21 @@ CREATE TABLE publisher_addresses
 
 CREATE TABLE publishers
 (
-    publisher_id bigserial primary key,
-    publisher_address_publisher_address_id bigint,
+    id bigserial primary key,
+    publisher_address_id bigint,
     name varchar(100) not null,
     creation_date timestamp,
     update_date timestamp,
-    CONSTRAINT un_publisher_address_publisher_address_id
-		UNIQUE (publisher_address_publisher_address_id),
-    CONSTRAINT fk_publisher_address_publisher_address_id
-		FOREIGN KEY (publisher_address_publisher_address_id)
-		REFERENCES publisher_addresses(publisher_address_id)
+    CONSTRAINT un_publisher_address_id
+		UNIQUE (publisher_address_id),
+    CONSTRAINT fk_publisher_address_id
+		FOREIGN KEY (publisher_address_id)
+		REFERENCES publisher_addresses(id)
 );
 
 CREATE TABLE authors
 (
-    author_id bigserial primary key,
+    id bigserial primary key,
     name varchar(100) not null,
     surname varchar(100) not null,
 	about varchar(500),
@@ -35,8 +35,8 @@ CREATE TABLE authors
 
 CREATE TABLE books
 (
-    book_id bigserial primary key,
-    publisher_publisher_id bigint,
+    id bigserial primary key,
+    publisher_id bigint,
 	title varchar(200) not null,
 	publication_date date not null,
 	language varchar(100),
@@ -45,22 +45,22 @@ CREATE TABLE books
     cover_image_url varchar(500),
     creation_date timestamp,
     update_date timestamp,
-    CONSTRAINT fk_publisher_publisher_id
-		FOREIGN KEY (publisher_publisher_id)
-        REFERENCES publishers (publisher_id)
+    CONSTRAINT fk_publisher_id
+		FOREIGN KEY (publisher_id)
+        REFERENCES publishers (id)
 );
 
 
 CREATE TABLE books_authors
 (
-    book_book_id bigint not null,
-    authors_author_id bigint not null,
+    book_id bigint not null,
+    authors_id bigint not null,
     creation_date timestamp,
     update_date timestamp,
-	CONSTRAINT fk_book_book_id
-		FOREIGN KEY (book_book_id)
-        REFERENCES books (book_id),
-    CONSTRAINT fk_authors_author_id
-		FOREIGN KEY (authors_author_id)
-        REFERENCES authors (author_id)
+	CONSTRAINT fk_book_id
+		FOREIGN KEY (book_id)
+        REFERENCES books (id),
+    CONSTRAINT fk_authors_id
+		FOREIGN KEY (authors_id)
+        REFERENCES authors (id)
 );

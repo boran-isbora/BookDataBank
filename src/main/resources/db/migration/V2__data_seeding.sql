@@ -6,7 +6,7 @@ INSERT INTO publisher_addresses(address, city, country, creation_date) VALUES
 ('2nd Street Dorm', 'New York', 'USA', current_timestamp);
 
 
-INSERT INTO publishers(name, publisher_address_publisher_address_id, creation_date) VALUES
+INSERT INTO publishers(name, publisher_address_id, creation_date) VALUES
 ('Oxford City Press', 5, current_timestamp),
 ('Beyaz Kitapevi', 1, current_timestamp),
 ('Penguin Book Group', 4, current_timestamp),
@@ -22,7 +22,7 @@ INSERT INTO authors(name, surname, about, creation_date) VALUES
 ('Gabriel Garcia', 'Marquez', '1927 Kolombiya doğumlu nobel ödüllü yazar', current_timestamp);
 
 
-INSERT INTO books(title, publication_date, language, print_length, isbn, cover_image_url, publisher_publisher_id, creation_date) VALUES
+INSERT INTO books(title, publication_date, language, print_length, isbn, cover_image_url, publisher_id, creation_date) VALUES
 ('Bahçedeki Ördek', '2020-10-25', 'Turkish', 105, '950-876-15-3035-8', 'https://www.example.com/images?id=101', 2, current_timestamp),
 ('Duvarın Tarihi', '1995-11-30', 'Turkish', 248, '741-564-18-1220-7', 'https://www.example.com/images?id=181', 2, current_timestamp),
 ('Çam Ağacı Yetiştiriciliği', '2002-09-02', 'Turkish', 721, '154-357-12-4879-1', 'https://www.example.com/images?id=201', 2, current_timestamp),
@@ -34,7 +34,7 @@ INSERT INTO books(title, publication_date, language, print_length, isbn, cover_i
 ('Walden', '2008-12-21', 'English', 327, '302-261-88-6803-3', 'https://www.example.com/images?id=621', 3, current_timestamp),
 ('Persuasion', '2012-03-30', 'English', 441, '100-181-77-7503-1', 'https://www.example.com/images?id=650', 3, current_timestamp);
 
-INSERT INTO books_authors(book_book_id, authors_author_id, creation_date) VALUES
+INSERT INTO books_authors(book_id, authors_id, creation_date) VALUES
 (1, 2, current_timestamp),
 (1, 4, current_timestamp),
 (1, 5, current_timestamp),

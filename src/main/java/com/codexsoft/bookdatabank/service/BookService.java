@@ -88,7 +88,7 @@ public class BookService {
 
         bookRepository.save(book);
 
-        return book.getBookId();
+        return book.getId();
     }
 
     @Transactional
@@ -137,6 +137,6 @@ public class BookService {
 
         bookRepository.save(book);
 
-        return book.getBookId();
+        return book.getId();
     }
 }

@@ -11,15 +11,15 @@ import java.util.List;
 public interface AuthorRepository extends JpaRepository<Author, Long>, CustomizedAuthorRepository {
     @Query("""
             SELECT NEW com.codexsoft.bookdatabank.model.dto.AuthorBookDTO(
-                            x.authorId,
+                            x.id,
                             x.name,
                             x.surname,
-                            b.bookId,
+                            b.id,
                             b.title,
                             b.coverImageUrl)
               FROM Book b
                     INNER JOIN b.authors x
-             WHERE x.authorId = :authorId
+             WHERE x.id = :authorId
     """)
     List<AuthorBookDTO> findAuthorBooks(Long authorId);
 }

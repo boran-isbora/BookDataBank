@@ -51,7 +51,7 @@ public class PublisherService {
 
         publisherRepository.save(publisher);
 
-        return publisher.getPublisherId();
+        return publisher.getId();
     }
 
     @Transactional
