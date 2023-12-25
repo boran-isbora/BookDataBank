@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PublisherRepository extends JpaRepository<Publisher, Long> {
 
@@ -35,7 +36,7 @@ public interface PublisherRepository extends JpaRepository<Publisher, Long> {
                         ON a.publisherAddressId = p.publisherAddress.publisherAddressId
              WHERE p.publisherId = :publisherId
     """)
-    PublisherDTO findPublisher(Long publisherId);
+    Optional<PublisherDTO> findPublisher(Long publisherId);
 
     @Query("""
             SELECT NEW com.codexsoft.bookdatabank.model.dto.PublisherBookDTO(

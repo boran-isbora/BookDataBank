@@ -2,8 +2,11 @@ package com.codexsoft.bookdatabank.controller;
 
 import com.codexsoft.bookdatabank.mapper.BookMapper;
 import com.codexsoft.bookdatabank.model.dto.*;
+import com.codexsoft.bookdatabank.model.request.BookAddAuthorRequest;
+import com.codexsoft.bookdatabank.model.request.BookAddPublisherRequest;
 import com.codexsoft.bookdatabank.model.request.BookRequest;
 import com.codexsoft.bookdatabank.service.BookService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -25,17 +28,14 @@ public class BookController {
     private final BookService bookService;
     private final BookMapper bookMapper;
 
-    @GetMapping
-    public ResponseEntity<Map<String, Object>> getBooks(@RequestParam(required = false, name = "lang") String language,
-                                                        @RequestParam(required = false, name = "publication_date") LocalDate afterPublicationDate,
-                                                        @PageableDefault(page = 0, size = 4) @SortDefault.SortDefaults({@SortDefault(sort = "publicationDate", direction = Sort.Direction.DESC)}) Pageable pageable) {
+    @GetMapping("/page")
+    public ResponseEntity<BookPageDTO> getBooks(@RequestParam(required = false, name = "lang") String language,
+                                                @RequestParam(required = false, name = "publication_date") LocalDate afterPublicationDate,
+                                                @PageableDefault(page = 0, size = 4) @SortDefault.SortDefaults({@SortDefault(sort = "publicationDate", direction = Sort.Direction.DESC)}) Pageable pageable) {
 
-        BookFilterDTO bookFilterDTO = new BookFilterDTO(language, afterPublicationDate, pageable);
+        var bookFilterDTO = new BookFilterDTO(language, afterPublicationDate, pageable);
 
-        Map<String, Object> response = bookService.getBooks(bookFilterDTO);
-
-        if(response == null || response.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        var response = bookService.getBooks(bookFilterDTO);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -43,52 +43,53 @@ public class BookController {
     @GetMapping("/{bookId}")
     public ResponseEntity<BookDTO> getBook(@PathVariable Long bookId) {
 
-        BookDTO book = bookService.getBook(bookId);
+        try {
 
-        if(book == null)
+            var bookDTO = bookService.getBook(bookId);
+
+            return new ResponseEntity<>(bookDTO, HttpStatus.OK);
+
+        } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        return new ResponseEntity<>(book, HttpStatus.OK);
+        }
     }
 
 
     @GetMapping("/{bookId}/publisher")
     public ResponseEntity<PublisherDTO> getBookPublisher(@PathVariable Long bookId) {
 
-        PublisherDTO publisher = bookService.getBookPublisher(bookId);
-
-        if(publisher == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        return new ResponseEntity<>(publisher, HttpStatus.OK);
+        return bookService.getBookPublisher(bookId)
+                .map(book -> new ResponseEntity<>(book, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/{bookId}/authors")
     public ResponseEntity<List<AuthorDTO>> getBookAuthors(@PathVariable Long bookId) {
 
-        List<AuthorDTO> authors = bookService.getBookAuthors(bookId);
+        try {
 
-        if(authors == null || authors.isEmpty())
+            List<AuthorDTO> authors = bookService.getBookAuthors(bookId);
+
+            return new ResponseEntity<>(authors, HttpStatus.OK);
+
+        } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
-        return new ResponseEntity<>(authors, HttpStatus.OK);
     }
 
     @GetMapping("/{bookId}/book-detail")
     public ResponseEntity<BookDetailDTO> getBookDetail(@PathVariable Long bookId) {
 
-        BookDetailDTO bookDetail = bookService.getBookDetail(bookId);
-
-        if(bookDetail == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        return new ResponseEntity<>(bookDetail, HttpStatus.OK);
+        return bookService.getBookDetail(bookId)
+                .map(book -> new ResponseEntity<>(book, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping
     public ResponseEntity<Long> createBook(@Valid @RequestBody BookRequest bookRequest) {
 
-        BookDTO bookDTO = bookMapper.map(bookRequest);
+        var bookDTO = bookMapper.map(bookRequest);
 
         Long response = bookService.createBook(bookDTO);
 
@@ -96,36 +97,35 @@ public class BookController {
     }
 
     @PutMapping("/{bookId}")
-    public ResponseEntity<HttpStatus> updateBook(@PathVariable Long bookId, @Valid @RequestBody BookRequest bookRequest) {
+    public ResponseEntity<Void> updateBook(@PathVariable Long bookId, @Valid @RequestBody BookRequest bookRequest) {
 
-        BookDTO bookDTO = bookMapper.map(bookRequest);
+        var bookDTO = bookMapper.map(bookRequest);
 
-        Long updatedBookId = bookService.updateBook(bookId, bookDTO);
-
-        if(updatedBookId == 0)
+        try {
+            bookService.updateBook(bookId, bookDTO);
+        } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping("/{bookId}/publisher/{publisherId}")
-    public ResponseEntity<Long> addPublisherToBook(@PathVariable Long bookId, @PathVariable Long publisherId) {
+    @PutMapping("/{bookId}/publisher")
+    public ResponseEntity<Void> addPublisherToBook(@PathVariable Long bookId, @Valid @RequestBody BookAddPublisherRequest request) {
 
-        Long response = bookService.addPublisherToBook(bookId, publisherId);
-
-        if(response == 0)
+        try {
+            bookService.addPublisherToBook(bookId, request.getPublisherId());
+        } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping("/{bookId}/authors/{authorId}")
-    public ResponseEntity<Long> addAuthorToBook(@PathVariable Long bookId, @PathVariable Long authorId) {
+    @PostMapping("/{bookId}/authors")
+    public ResponseEntity<Long> addAuthorToBook(@PathVariable Long bookId, @Valid @RequestBody BookAddAuthorRequest request) {
 
-        Long response = bookService.addAuthorToBook(bookId, authorId);
-
-        if(response == 0)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Long response = bookService.addAuthorToBook(bookId, request.getAuthorId());
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

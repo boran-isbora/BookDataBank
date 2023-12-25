@@ -6,6 +6,8 @@ import com.codexsoft.bookdatabank.model.dto.PublisherDTO;
 import com.codexsoft.bookdatabank.model.entity.Publisher;
 import com.codexsoft.bookdatabank.model.entity.PublisherAddress;
 import com.codexsoft.bookdatabank.repository.PublisherRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +26,7 @@ public class PublisherService {
         return publisherRepository.findPublisher();
     }
 
-    public PublisherDTO getPublisher(Long publisherId) {
+    public Optional<PublisherDTO> getPublisher(Long publisherId) {
 
         return publisherRepository.findPublisher(publisherId);
     }
@@ -34,51 +36,46 @@ public class PublisherService {
         return publisherRepository.findPublisherBooks(publisherId);
     }
 
+    @Transactional
     public Long createPublisher(PublisherDTO publisherDTO) {
 
-        Publisher publisher = new Publisher();
+        var publisher = new Publisher();
         publisher.setName(publisherDTO.getName());
 
-        if((publisherDTO.getAddress() != null && !publisherDTO.getAddress().isBlank()) ||
-                (publisherDTO.getCity() != null &&  !publisherDTO.getCity().isBlank()) ||
-                (publisherDTO.getCountry() != null &&  !publisherDTO.getCountry().isBlank())) {
+        if(publisherDTO.getAddress() != null || publisherDTO.getCity() != null || publisherDTO.getCountry() != null) {
 
             PublisherAddress publisherAddress = publisherAddressMapper.map(publisherDTO);
 
             publisher.setPublisherAddress(publisherAddress);
         }
 
-        Publisher newnewPublisher = publisherRepository.save(publisher);
+        publisherRepository.save(publisher);
 
-        return newnewPublisher.getPublisherId();
+        return publisher.getPublisherId();
     }
 
-    public Long updatePublisher(Long publisherId, PublisherDTO publisherDTO) {
+    @Transactional
+    public void updatePublisher(Long publisherId, PublisherDTO publisherDTO) {
 
-        Optional<Publisher> publisherOptional = publisherRepository.findById(publisherId);
+        var publisher = publisherRepository.findById(publisherId)
+                .orElseThrow(() -> new EntityNotFoundException("Publisher not found!"));
 
-        if(publisherOptional.isEmpty())
-            return 0L;
-
-        Publisher publisher = publisherOptional.get();
         publisher.setName(publisherDTO.getName());
 
         if(publisher.getPublisherAddress() != null) {
 
-            publisher.getPublisherAddress().setAddress(publisherDTO.getAddress());
-            publisher.getPublisherAddress().setCity(publisherDTO.getCity());
-            publisher.getPublisherAddress().setCountry(publisherDTO.getCountry());
+            var publisherAddress = publisher.getPublisherAddress();
 
-        } else if(!publisherDTO.getAddress().isBlank() ||
-                !publisherDTO.getCity().isBlank() ||
-                !publisherDTO.getCountry().isBlank()) {
+            publisherAddress.setAddress(publisherDTO.getAddress());
+            publisherAddress.setCity(publisherDTO.getCity());
+            publisherAddress.setCountry(publisherDTO.getCountry());
+
+        } else if(publisherDTO.getAddress() != null || publisherDTO.getCity() != null || publisherDTO.getCountry() != null) {
 
             PublisherAddress newPublisherAddress =  publisherAddressMapper.map(publisherDTO);
             publisher.setPublisherAddress(newPublisherAddress);
         }
 
-        Publisher updatedPublisher = publisherRepository.save(publisher);
-
-        return updatedPublisher.getPublisherId();
+        publisherRepository.save(publisher);
     }
 }

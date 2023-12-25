@@ -5,6 +5,7 @@ import com.codexsoft.bookdatabank.model.dto.AuthorBookDTO;
 import com.codexsoft.bookdatabank.model.dto.AuthorDTO;
 import com.codexsoft.bookdatabank.model.request.AuthorRequest;
 import com.codexsoft.bookdatabank.service.AuthorService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,38 +26,38 @@ public class AuthorController {
     public ResponseEntity<List<AuthorDTO>> getAuthors(@RequestParam(required = false, name = "page") Integer pageNumber,
                                                       @RequestParam(required = false, name = "size") Integer pageSize) {
 
-        List<AuthorDTO> authors;
-
-        if(pageNumber != null && pageNumber >= 0 && pageSize != null && pageSize > 0) {
-            authors = authorService.getAuthors(pageNumber, pageSize);
-        } else {
-            authors = authorService.getAuthors();
-        }
-
-        if(authors == null || authors.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        var authors = getAuthorDTOS(pageNumber, pageSize);
 
         return new ResponseEntity<>(authors, HttpStatus.OK);
+    }
+
+    private List<AuthorDTO> getAuthorDTOS(Integer pageNumber, Integer pageSize) {
+
+        if(pageNumber != null && pageNumber >= 0 && pageSize != null && pageSize > 0) {
+            return authorService.getAuthors(pageNumber, pageSize);
+        } else {
+            return authorService.getAuthors();
+        }
     }
 
     @GetMapping("/{authorId}")
     public ResponseEntity<AuthorDTO> getAuthor(@PathVariable Long authorId) {
 
-        AuthorDTO author = authorService.getAuthor(authorId);
+        try {
 
-        if(author == null)
+            var authorDTO = authorService.getAuthor(authorId);
+
+            return new ResponseEntity<>(authorDTO, HttpStatus.OK);
+
+        } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        return new ResponseEntity<>(author, HttpStatus.OK);
+        }
     }
 
     @GetMapping("/{authorId}/author-books")
     public ResponseEntity<List<AuthorBookDTO>> getAuthorBooks(@PathVariable Long authorId) {
 
-        List<AuthorBookDTO> authorBooks = authorService.getAuthorBooks(authorId);
-
-        if(authorBooks == null || authorBooks.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        var authorBooks = authorService.getAuthorBooks(authorId);
 
         return new ResponseEntity<>(authorBooks, HttpStatus.OK);
     }
@@ -64,7 +65,7 @@ public class AuthorController {
     @PostMapping
     public ResponseEntity<Long> createAuthor(@Valid @RequestBody AuthorRequest authorRequest) {
 
-        AuthorDTO authorDTO = authorMapper.map(authorRequest);
+        var authorDTO = authorMapper.map(authorRequest);
 
         Long response = authorService.createAuthor(authorDTO);
 
@@ -72,14 +73,15 @@ public class AuthorController {
     }
 
     @PutMapping("/{authorId}")
-    public ResponseEntity<HttpStatus> updateAuthor(@PathVariable Long authorId, @Valid @RequestBody AuthorRequest authorRequest) {
+    public ResponseEntity<Void> updateAuthor(@PathVariable Long authorId, @Valid @RequestBody AuthorRequest authorRequest) {
 
-        AuthorDTO authorDTO = authorMapper.map(authorRequest);
+        var authorDTO = authorMapper.map(authorRequest);
 
-        Long updatedAuthorId = authorService.updateAuthor(authorId, authorDTO);
-
-        if(updatedAuthorId == 0)
+        try {
+            authorService.updateAuthor(authorId, authorDTO);
+        } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

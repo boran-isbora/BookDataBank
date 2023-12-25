@@ -5,6 +5,7 @@ import com.codexsoft.bookdatabank.model.dto.PublisherBookDTO;
 import com.codexsoft.bookdatabank.model.dto.PublisherDTO;
 import com.codexsoft.bookdatabank.model.request.PublisherRequest;
 import com.codexsoft.bookdatabank.service.PublisherService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,10 +25,7 @@ public class PublisherController {
     @GetMapping
     public ResponseEntity<List<PublisherDTO>> getPublishers() {
 
-        List<PublisherDTO> publishers = publisherService.getPublishers();
-
-        if(publishers == null || publishers.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        var publishers = publisherService.getPublishers();
 
         return new ResponseEntity<>(publishers, HttpStatus.OK);
     }
@@ -35,21 +33,15 @@ public class PublisherController {
     @GetMapping("/{publisherId}")
     public ResponseEntity<PublisherDTO> getPublisher(@PathVariable Long publisherId) {
 
-        PublisherDTO publisher = publisherService.getPublisher(publisherId);
-
-        if(publisher == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        return new ResponseEntity<>(publisher, HttpStatus.OK);
+        return publisherService.getPublisher(publisherId)
+                .map(publisher -> new ResponseEntity<>(publisher, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/{publisherId}/publisher-books")
     public ResponseEntity<List<PublisherBookDTO>> getPublisherBooks(@PathVariable Long publisherId) {
 
-        List<PublisherBookDTO> publisherBooks = publisherService.getPublisherBooks(publisherId);
-
-        if(publisherBooks == null || publisherBooks.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        var publisherBooks = publisherService.getPublisherBooks(publisherId);
 
         return new ResponseEntity<>(publisherBooks, HttpStatus.OK);
     }
@@ -57,7 +49,7 @@ public class PublisherController {
     @PostMapping
     public ResponseEntity<Long> createPublisher(@Valid @RequestBody PublisherRequest publisherRequest) {
 
-        PublisherDTO publisherDTO = publisherMapper.map(publisherRequest);
+        var publisherDTO = publisherMapper.map(publisherRequest);
 
         Long response = publisherService.createPublisher(publisherDTO);
 
@@ -65,14 +57,15 @@ public class PublisherController {
     }
 
     @PutMapping("/{publisherId}")
-    public ResponseEntity<HttpStatus> updatePublisher(@PathVariable Long publisherId, @Valid @RequestBody PublisherRequest publisherRequest) {
+    public ResponseEntity<Void> updatePublisher(@PathVariable Long publisherId, @Valid @RequestBody PublisherRequest publisherRequest) {
 
-        PublisherDTO publisherDTO = publisherMapper.map(publisherRequest);
+        var publisherDTO = publisherMapper.map(publisherRequest);
 
-        Long updatedPublisherId = publisherService.updatePublisher(publisherId, publisherDTO);
-
-        if(updatedPublisherId == 0)
+        try {
+            publisherService.updatePublisher(publisherId, publisherDTO);
+        } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

@@ -3,8 +3,9 @@ package com.codexsoft.bookdatabank.service;
 import com.codexsoft.bookdatabank.mapper.AuthorMapper;
 import com.codexsoft.bookdatabank.model.dto.AuthorBookDTO;
 import com.codexsoft.bookdatabank.model.dto.AuthorDTO;
-import com.codexsoft.bookdatabank.model.entity.Author;
 import com.codexsoft.bookdatabank.repository.AuthorRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,28 +21,24 @@ public class AuthorService {
 
     public List<AuthorDTO> getAuthors() {
 
-        List<Author> authors = authorRepository.findAll();
+        var authors = authorRepository.findAll();
 
         return authorMapper.map(authors);
     }
 
     public List<AuthorDTO> getAuthors(Integer pageNumber, Integer pageSize) {
 
-        List<Author> authors = authorRepository.getAuthors(pageNumber, pageSize);
+        var authors = authorRepository.getAuthors(pageNumber, pageSize);
 
         return authorMapper.map(authors);
     }
 
     public AuthorDTO getAuthor(Long authorId) {
 
-        Optional<Author> authorOptional = authorRepository.findById(authorId);
+        var author = authorRepository.findById(authorId)
+                .orElseThrow(() -> new EntityNotFoundException("Author not found!"));
 
-        if(authorOptional.isEmpty())
-            return null;
-
-        Author author = authorOptional.get();
-
-        return  authorMapper.map(author);
+        return authorMapper.map(author);
     }
 
     public List<AuthorBookDTO> getAuthorBooks(Long authorId) {
@@ -49,29 +46,26 @@ public class AuthorService {
         return authorRepository.findAuthorBooks(authorId);
     }
 
+    @Transactional
     public Long createAuthor(AuthorDTO authorDTO) {
 
-        Author author = authorMapper.map(authorDTO);
+        var author = authorMapper.map(authorDTO);
 
-        Author newAuthor = authorRepository.save(author);
+        authorRepository.save(author);
 
-        return newAuthor.getAuthorId();
+        return author.getAuthorId();
     }
 
-    public Long updateAuthor(Long authorId, AuthorDTO authorDTO) {
+    @Transactional
+    public void updateAuthor(Long authorId, AuthorDTO authorDTO) {
 
-        Optional<Author> authorOptional = authorRepository.findById(authorId);
+        var author = authorRepository.findById(authorId)
+                .orElseThrow(() -> new EntityNotFoundException("Author not found!"));
 
-        if(authorOptional.isEmpty())
-            return 0L;
-
-        Author author = authorOptional.get();
         author.setName(authorDTO.getName());
         author.setSurname(authorDTO.getSurname());
         author.setAbout(authorDTO.getAbout());
 
-        Author updatedAuthor = authorRepository.save(author);
-
-        return updatedAuthor.getAuthorId();
+        authorRepository.save(author);
     }
 }

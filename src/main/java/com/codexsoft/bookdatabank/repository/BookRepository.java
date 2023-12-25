@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificationExecutor<Book> {
 
@@ -29,7 +30,7 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
                             ON b.publisher.publisherId = p.publisherId
                  WHERE b.bookId = :bookId
             """)
-    PublisherDTO findBookPublisher(Long bookId);
+    Optional<PublisherDTO> findBookPublisher(Long bookId);
 
 
     @Query(value = """
@@ -55,25 +56,25 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
     List<Tuple> findBookDetailInternal(Long bookId);
 
 
-    default BookDetailDTO findBookDetail(Long bookId) {
+    default Optional<BookDetailDTO> findBookDetail(Long bookId) {
 
         var records = findBookDetailInternal(bookId);
 
-        BookDetailDTO result = new BookDetailDTO();
+        Optional<BookDetailDTO> result = Optional.of(new BookDetailDTO());
 
         if(records.isEmpty())
             return result;
 
         var firstRecord = records.get(0);
-        result.setPublisherId(firstRecord.get("publisherId", Long.class));
-        result.setPublisherName(firstRecord.get("publisherName", String.class));
-        result.setBookId(firstRecord.get("bookId", Long.class));
-        result.setBookTitle(firstRecord.get("bookTitle", String.class));
-        result.setIsbn(firstRecord.get("isbn", String.class));
-        result.setLanguage(firstRecord.get("language", String.class));
-        result.setPrintLength(firstRecord.get("printLength", Integer.class));
-        result.setPublicationDate(firstRecord.get("publicationDate", LocalDate.class));
-        result.setCoverImageUrl(firstRecord.get("coverImageUrl", String.class));
+        result.get().setPublisherId(firstRecord.get("publisherId", Long.class));
+        result.get().setPublisherName(firstRecord.get("publisherName", String.class));
+        result.get().setBookId(firstRecord.get("bookId", Long.class));
+        result.get().setBookTitle(firstRecord.get("bookTitle", String.class));
+        result.get().setIsbn(firstRecord.get("isbn", String.class));
+        result.get().setLanguage(firstRecord.get("language", String.class));
+        result.get().setPrintLength(firstRecord.get("printLength", Integer.class));
+        result.get().setPublicationDate(firstRecord.get("publicationDate", LocalDate.class));
+        result.get().setCoverImageUrl(firstRecord.get("coverImageUrl", String.class));
 
         List<AuthorDTO> authors = records.stream().map(t -> {
             AuthorDTO author = new AuthorDTO();
@@ -84,7 +85,7 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
             return author;
         }).toList();
 
-        result.setAuthors(authors);
+        result.get().setAuthors(authors);
 
         return result;
     }

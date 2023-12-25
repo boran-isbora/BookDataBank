@@ -16,7 +16,7 @@ public class ReportService {
 
     public List<ReportBookDTO> geReportAllBooks() {
 
-        List<ReportBookDTO> reportBookDTOS = bookRepository.getAllBookReport();
+        var reportBookDTOS = bookRepository.getAllBookReport();
         reportBookDTOS.sort(Comparator.comparing(ReportBookDTO::getPublicationDate).reversed());
 
         return reportBookDTOS;

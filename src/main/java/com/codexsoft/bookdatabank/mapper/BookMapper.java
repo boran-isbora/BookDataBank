@@ -6,6 +6,8 @@ import com.codexsoft.bookdatabank.model.request.BookRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.Optional;
+
 @Mapper(componentModel = "spring")
 public interface BookMapper {
 

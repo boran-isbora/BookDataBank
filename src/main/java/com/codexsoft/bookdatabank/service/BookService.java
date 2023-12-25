@@ -3,21 +3,19 @@ package com.codexsoft.bookdatabank.service;
 import com.codexsoft.bookdatabank.mapper.AuthorMapper;
 import com.codexsoft.bookdatabank.mapper.BookMapper;
 import com.codexsoft.bookdatabank.model.dto.*;
-import com.codexsoft.bookdatabank.model.entity.Author;
 import com.codexsoft.bookdatabank.model.entity.Book;
-import com.codexsoft.bookdatabank.model.entity.Publisher;
 import com.codexsoft.bookdatabank.repository.AuthorRepository;
 import com.codexsoft.bookdatabank.repository.BookRepository;
 import com.codexsoft.bookdatabank.repository.PublisherRepository;
 import com.codexsoft.bookdatabank.repository.specification.BookSpecification;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -30,10 +28,7 @@ public class BookService {
     private final BookMapper bookMapper;
     private final AuthorMapper authorMapper;
 
-    public Map<String, Object> getBooks(BookFilterDTO bookFilterDTO) {
-
-        if(bookFilterDTO == null)
-            return null;
+    public BookPageDTO getBooks(BookFilterDTO bookFilterDTO) {
 
         Specification<Book> specification = Specification.where(null);
 
@@ -47,73 +42,62 @@ public class BookService {
 
         Page<Book> pageBook = bookRepository.findAll(specification, bookFilterDTO.getPageable());
 
-        if(pageBook.getTotalElements() == 0)
-            return null;
-
         List<BookDTO> bookDTOS = pageBook.map(bookMapper::map).getContent();
 
-        Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("books", bookDTOS);
-        resultMap.put("currentPage", pageBook.getNumber());
-        resultMap.put("totalItems", pageBook.getTotalElements());
-        resultMap.put("totalPages", pageBook.getTotalPages());
+        BookPageDTO response = new BookPageDTO();
+        response.setTotalItems(pageBook.getTotalElements());
+        response.setTotalPages(pageBook.getTotalPages());
+        response.setCurrentPage(pageBook.getNumber());
+        response.setBookDTOS(bookDTOS);
 
-        return resultMap;
+        return response;
     }
 
     public BookDTO getBook(Long bookId) {
 
-        Optional<Book> bookOptional = bookRepository.findById(bookId);
-
-        if(bookOptional.isEmpty())
-            return null;
-
-        Book book = bookOptional.get();
+        var book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new EntityNotFoundException("Book not found!"));
 
         return bookMapper.map(book);
     }
 
-    public PublisherDTO getBookPublisher(Long bookId) {
+    public Optional<PublisherDTO> getBookPublisher(Long bookId) {
 
         return bookRepository.findBookPublisher(bookId);
     }
 
     public List<AuthorDTO> getBookAuthors(Long bookId) {
 
-        Optional<Book> bookOptional = bookRepository.findById(bookId);
+        var book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new EntityNotFoundException("Book not found!"));
 
-        if(bookOptional.isEmpty())
-            return null;
-
-        Book book = bookOptional.get();
-
-        List<Author> authors = book.getAuthors();
+        var authors = book.getAuthors();
 
         return authorMapper.map(authors);
     }
 
-    public BookDetailDTO getBookDetail(Long bookId) {
+    public Optional<BookDetailDTO> getBookDetail(Long bookId) {
 
         return bookRepository.findBookDetail(bookId);
     }
 
+    @Transactional
     public Long createBook(BookDTO bookDTO) {
 
         Book book = bookMapper.map(bookDTO);
 
-        Book newBook = bookRepository.save(book);
+        bookRepository.save(book);
 
-        return newBook.getBookId();
+        return book.getBookId();
     }
 
-    public Long updateBook(Long bookId, BookDTO bookDTO) {
+    @Transactional
+    public void updateBook(Long bookId, BookDTO bookDTO) {
 
-        Optional<Book> bookOptional = bookRepository.findById(bookId);
+        var book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new EntityNotFoundException("Book not found!"));
 
-        if(bookOptional.isEmpty())
-            return 0L;
 
-        Book book = bookOptional.get();
         book.setTitle(bookDTO.getTitle());
         book.setCoverImageUrl(bookDTO.getCoverImageUrl());
         book.setIsbn(bookDTO.getIsbn());
@@ -121,48 +105,38 @@ public class BookService {
         book.setLanguage(bookDTO.getLanguage());
         book.setPrintLength(bookDTO.getPrintLength());
 
-        Book updatedBook = bookRepository.save(book);
-
-        return updatedBook.getBookId();
+        bookRepository.save(book);
     }
 
-    public Long addPublisherToBook(Long bookId, Long publisherId) {
+    @Transactional
+    public void addPublisherToBook(Long bookId, Long publisherId) {
 
-        Optional<Publisher> publisherOptional = publisherRepository.findById(publisherId);
-        if (publisherOptional.isEmpty())
-            return 0L;
+        var publisher = publisherRepository.findById(publisherId)
+                .orElseThrow(() -> new EntityNotFoundException("Publisher not found!"));
 
-        Optional<Book> bookOptional = bookRepository.findById(bookId);
-        if (bookOptional.isEmpty())
-            return 0L;
+        var book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new EntityNotFoundException("Book not found!"));
 
-        Publisher publisher = publisherOptional.get();
 
-        Book book = bookOptional.get();
         book.setPublisher(publisher);
 
-        Book newBook = bookRepository.save(book);
-
-        return newBook.getBookId();
+        bookRepository.save(book);
     }
 
+    @Transactional
     public Long addAuthorToBook(Long bookId, Long authorId) {
 
-        Optional<Author> authorOptional = authorRepository.findById(authorId);
-        if(authorOptional.isEmpty())
-            return 0L;
+        var author = authorRepository.findById(authorId)
+                .orElseThrow(() -> new EntityNotFoundException("Author not found!"));
 
-        Optional<Book> bookOptional = bookRepository.findById(bookId);
-        if (bookOptional.isEmpty())
-            return 0L;
+        var book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new EntityNotFoundException("Book not found!"));
 
-        Author author = authorOptional.get();
 
-        Book book = bookOptional.get();
         book.getAuthors().add(author);
 
-        Book newBook = bookRepository.save(book);
+        bookRepository.save(book);
 
-        return newBook.getBookId();
+        return book.getBookId();
     }
 }

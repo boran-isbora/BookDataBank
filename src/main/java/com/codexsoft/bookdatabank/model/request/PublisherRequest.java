@@ -11,7 +11,12 @@ public class PublisherRequest {
     @NotEmpty(message = "NAME should not be empty")
     private String name;
 
+    @NotEmpty(message = "ADDRESS should not be empty")
     private String address;
+
+    @NotEmpty(message = "CITY should not be empty")
     private String city;
+
+    @NotEmpty(message = "COUNTRY should not be empty")
     private String country;
 }
