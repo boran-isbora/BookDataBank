@@ -6,9 +6,9 @@ import com.codexsoft.bookdatabank.model.dto.PublisherDTO;
 import com.codexsoft.bookdatabank.model.entity.Publisher;
 import com.codexsoft.bookdatabank.repository.PublisherRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,16 +20,19 @@ public class PublisherService {
     private final PublisherRepository publisherRepository;
     private final PublisherAddressMapper publisherAddressMapper;
 
+    @Transactional(readOnly = true)
     public List<PublisherDTO> getPublishers() {
 
         return publisherRepository.findPublisher();
     }
 
+    @Transactional(readOnly = true)
     public Optional<PublisherDTO> getPublisher(Long publisherId) {
 
         return publisherRepository.findPublisher(publisherId);
     }
 
+    @Transactional(readOnly = true)
     public List<PublisherBookDTO> getPublisherBooks(Long publisherId) {
 
         return publisherRepository.findPublisherBooks(publisherId);

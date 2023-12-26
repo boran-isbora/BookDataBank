@@ -2,16 +2,15 @@ package com.codexsoft.bookdatabank.repository.customized;
 
 import com.codexsoft.bookdatabank.model.entity.Author;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
-import org.springframework.stereotype.Repository;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-@Repository
+@RequiredArgsConstructor
 public class CustomizedAuthorRepositoryImpl implements CustomizedAuthorRepository {
-    @PersistenceContext
-    private EntityManager entityManager;
+
+    private final EntityManager entityManager;
 
     public List<Author> getAuthors(Integer pageNumber, Integer pageSize) {
 

@@ -5,9 +5,9 @@ import com.codexsoft.bookdatabank.model.dto.AuthorBookDTO;
 import com.codexsoft.bookdatabank.model.dto.AuthorDTO;
 import com.codexsoft.bookdatabank.repository.AuthorRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,6 +18,7 @@ public class AuthorService {
     private final AuthorRepository authorRepository;
     private final AuthorMapper authorMapper;
 
+    @Transactional(readOnly = true)
     public List<AuthorDTO> getAuthors() {
 
         var authors = authorRepository.findAll();
@@ -25,6 +26,7 @@ public class AuthorService {
         return authorMapper.map(authors);
     }
 
+    @Transactional(readOnly = true)
     public List<AuthorDTO> getAuthors(Integer pageNumber, Integer pageSize) {
 
         var authors = authorRepository.getAuthors(pageNumber, pageSize);
@@ -32,6 +34,7 @@ public class AuthorService {
         return authorMapper.map(authors);
     }
 
+    @Transactional(readOnly = true)
     public AuthorDTO getAuthor(Long authorId) {
 
         var author = authorRepository.findById(authorId)
@@ -40,6 +43,7 @@ public class AuthorService {
         return authorMapper.map(author);
     }
 
+    @Transactional(readOnly = true)
     public List<AuthorBookDTO> getAuthorBooks(Long authorId) {
 
         return authorRepository.findAuthorBooks(authorId);

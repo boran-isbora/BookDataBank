@@ -9,11 +9,11 @@ import com.codexsoft.bookdatabank.repository.BookRepository;
 import com.codexsoft.bookdatabank.repository.PublisherRepository;
 import com.codexsoft.bookdatabank.repository.specification.BookSpecification;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +28,7 @@ public class BookService {
     private final BookMapper bookMapper;
     private final AuthorMapper authorMapper;
 
+    @Transactional(readOnly = true)
     public BookPageDTO getBooks(BookFilterDTO bookFilterDTO) {
 
         Specification<Book> specification = Specification.where(null);
@@ -53,6 +54,7 @@ public class BookService {
         return response;
     }
 
+    @Transactional(readOnly = true)
     public BookDTO getBook(Long bookId) {
 
         var book = bookRepository.findById(bookId)
@@ -61,11 +63,13 @@ public class BookService {
         return bookMapper.map(book);
     }
 
+    @Transactional(readOnly = true)
     public Optional<PublisherDTO> getBookPublisher(Long bookId) {
 
         return bookRepository.findBookPublisher(bookId);
     }
 
+    @Transactional(readOnly = true)
     public List<AuthorDTO> getBookAuthors(Long bookId) {
 
         var book = bookRepository.findById(bookId)
@@ -76,6 +80,7 @@ public class BookService {
         return authorMapper.map(authors);
     }
 
+    @Transactional(readOnly = true)
     public Optional<BookDetailDTO> getBookDetail(Long bookId) {
 
         return bookRepository.findBookDetail(bookId);
