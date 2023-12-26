@@ -4,7 +4,6 @@ import com.codexsoft.bookdatabank.mapper.PublisherAddressMapper;
 import com.codexsoft.bookdatabank.model.dto.PublisherBookDTO;
 import com.codexsoft.bookdatabank.model.dto.PublisherDTO;
 import com.codexsoft.bookdatabank.model.entity.Publisher;
-import com.codexsoft.bookdatabank.model.entity.PublisherAddress;
 import com.codexsoft.bookdatabank.repository.PublisherRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -44,7 +43,7 @@ public class PublisherService {
 
         if(publisherDTO.getAddress() != null || publisherDTO.getCity() != null || publisherDTO.getCountry() != null) {
 
-            PublisherAddress publisherAddress = publisherAddressMapper.map(publisherDTO);
+            var publisherAddress = publisherAddressMapper.map(publisherDTO);
 
             publisher.setPublisherAddress(publisherAddress);
         }
@@ -72,7 +71,7 @@ public class PublisherService {
 
         } else if(publisherDTO.getAddress() != null || publisherDTO.getCity() != null || publisherDTO.getCountry() != null) {
 
-            PublisherAddress newPublisherAddress =  publisherAddressMapper.map(publisherDTO);
+            var newPublisherAddress =  publisherAddressMapper.map(publisherDTO);
             publisher.setPublisherAddress(newPublisherAddress);
         }
 

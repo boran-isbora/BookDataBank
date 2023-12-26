@@ -54,7 +54,6 @@ public class BookController {
         }
     }
 
-
     @GetMapping("/{bookId}/publisher")
     public ResponseEntity<PublisherDTO> getBookPublisher(@PathVariable Long bookId) {
 

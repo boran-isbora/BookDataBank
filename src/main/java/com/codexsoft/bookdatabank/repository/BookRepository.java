@@ -66,15 +66,18 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
             return result;
 
         var firstRecord = records.get(0);
-        result.get().setPublisherId(firstRecord.get("publisherId", Long.class));
-        result.get().setPublisherName(firstRecord.get("publisherName", String.class));
-        result.get().setBookId(firstRecord.get("bookId", Long.class));
-        result.get().setBookTitle(firstRecord.get("bookTitle", String.class));
-        result.get().setIsbn(firstRecord.get("isbn", String.class));
-        result.get().setLanguage(firstRecord.get("language", String.class));
-        result.get().setPrintLength(firstRecord.get("printLength", Integer.class));
-        result.get().setPublicationDate(firstRecord.get("publicationDate", LocalDate.class));
-        result.get().setCoverImageUrl(firstRecord.get("coverImageUrl", String.class));
+
+        var resultGet = result.get();
+
+        resultGet.setPublisherId(firstRecord.get("publisherId", Long.class));
+        resultGet.setPublisherName(firstRecord.get("publisherName", String.class));
+        resultGet.setBookId(firstRecord.get("bookId", Long.class));
+        resultGet.setBookTitle(firstRecord.get("bookTitle", String.class));
+        resultGet.setIsbn(firstRecord.get("isbn", String.class));
+        resultGet.setLanguage(firstRecord.get("language", String.class));
+        resultGet.setPrintLength(firstRecord.get("printLength", Integer.class));
+        resultGet.setPublicationDate(firstRecord.get("publicationDate", LocalDate.class));
+        resultGet.setCoverImageUrl(firstRecord.get("coverImageUrl", String.class));
 
         List<AuthorDTO> authors = records.stream().map(t -> {
             AuthorDTO author = new AuthorDTO();
@@ -85,7 +88,7 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
             return author;
         }).toList();
 
-        result.get().setAuthors(authors);
+        resultGet.setAuthors(authors);
 
         return result;
     }

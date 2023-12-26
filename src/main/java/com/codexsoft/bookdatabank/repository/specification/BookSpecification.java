@@ -6,7 +6,7 @@ import org.springframework.data.jpa.domain.Specification;
 import java.time.LocalDate;
 
 public class BookSpecification {
-    public static Specification<Book> hasLanguage(String language) {
+    public static Specification<Book> hasLanguageEqualTo(String language) {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("language"), language);
     }

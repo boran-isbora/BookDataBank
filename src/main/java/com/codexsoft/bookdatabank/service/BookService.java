@@ -33,7 +33,7 @@ public class BookService {
         Specification<Book> specification = Specification.where(null);
 
         if(bookFilterDTO.getLanguage() != null && !bookFilterDTO.getLanguage().isEmpty()) {
-            specification = specification.and(BookSpecification.hasLanguage(bookFilterDTO.getLanguage()));
+            specification = specification.and(BookSpecification.hasLanguageEqualTo(bookFilterDTO.getLanguage()));
         }
 
         if(bookFilterDTO.getAfterPublicationDate() != null) {
