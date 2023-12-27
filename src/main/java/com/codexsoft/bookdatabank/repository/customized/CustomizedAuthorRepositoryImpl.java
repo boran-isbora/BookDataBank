@@ -5,7 +5,6 @@ import jakarta.persistence.EntityManager;
 
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
