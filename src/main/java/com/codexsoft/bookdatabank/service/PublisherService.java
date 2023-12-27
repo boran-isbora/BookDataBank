@@ -8,7 +8,6 @@ import com.codexsoft.bookdatabank.repository.PublisherRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,25 +19,22 @@ public class PublisherService {
     private final PublisherRepository publisherRepository;
     private final PublisherAddressMapper publisherAddressMapper;
 
-    @Transactional(readOnly = true)
     public List<PublisherDTO> getPublishers() {
 
         return publisherRepository.findPublisher();
     }
 
-    @Transactional(readOnly = true)
     public Optional<PublisherDTO> getPublisher(Long publisherId) {
 
         return publisherRepository.findPublisher(publisherId);
     }
 
-    @Transactional(readOnly = true)
     public List<PublisherBookDTO> getPublisherBooks(Long publisherId) {
 
         return publisherRepository.findPublisherBooks(publisherId);
     }
 
-    @Transactional
+
     public Long createPublisher(PublisherDTO publisherDTO) {
 
         var publisher = new Publisher();
@@ -56,7 +52,7 @@ public class PublisherService {
         return publisher.getId();
     }
 
-    @Transactional
+
     public void updatePublisher(Long publisherId, PublisherDTO publisherDTO) {
 
         var publisher = publisherRepository.findById(publisherId)

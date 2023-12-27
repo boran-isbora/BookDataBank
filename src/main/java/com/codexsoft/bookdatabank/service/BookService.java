@@ -63,7 +63,6 @@ public class BookService {
         return bookMapper.map(book);
     }
 
-    @Transactional(readOnly = true)
     public Optional<PublisherDTO> getBookPublisher(Long bookId) {
 
         return bookRepository.findBookPublisher(bookId);
@@ -80,13 +79,11 @@ public class BookService {
         return authorMapper.map(authors);
     }
 
-    @Transactional(readOnly = true)
     public Optional<BookDetailDTO> getBookDetail(Long bookId) {
 
         return bookRepository.findBookDetail(bookId);
     }
 
-    @Transactional
     public Long createBook(BookDTO bookDTO) {
 
         Book book = bookMapper.map(bookDTO);
@@ -96,7 +93,6 @@ public class BookService {
         return book.getId();
     }
 
-    @Transactional
     public void updateBook(Long bookId, BookDTO bookDTO) {
 
         var book = bookRepository.findById(bookId)
@@ -113,7 +109,6 @@ public class BookService {
         bookRepository.save(book);
     }
 
-    @Transactional
     public void addPublisherToBook(Long bookId, Long publisherId) {
 
         var publisher = publisherRepository.findById(publisherId)
@@ -128,7 +123,6 @@ public class BookService {
         bookRepository.save(book);
     }
 
-    @Transactional
     public Long addAuthorToBook(Long bookId, Long authorId) {
 
         var author = authorRepository.findById(authorId)

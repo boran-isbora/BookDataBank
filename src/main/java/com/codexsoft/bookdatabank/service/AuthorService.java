@@ -43,13 +43,11 @@ public class AuthorService {
         return authorMapper.map(author);
     }
 
-    @Transactional(readOnly = true)
     public List<AuthorBookDTO> getAuthorBooks(Long authorId) {
 
         return authorRepository.findAuthorBooks(authorId);
     }
 
-    @Transactional
     public Long createAuthor(AuthorDTO authorDTO) {
 
         var author = authorMapper.map(authorDTO);
@@ -59,7 +57,6 @@ public class AuthorService {
         return author.getId();
     }
 
-    @Transactional
     public void updateAuthor(Long authorId, AuthorDTO authorDTO) {
 
         var author = authorRepository.findById(authorId)
