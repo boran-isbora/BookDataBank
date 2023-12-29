@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class BookDTO {
+public class BookDto {
     private Long id;
     private String title;
     private String isbn;

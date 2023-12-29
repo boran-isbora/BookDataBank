@@ -10,8 +10,8 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @AllArgsConstructor
-public class BookFilterDTO {
+public class BookFilterDto {
     private String language;
-    private LocalDate afterPublicationDate;
+    private LocalDate minPublicationDate;
     private Pageable pageable;
 }

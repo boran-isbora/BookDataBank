@@ -1,19 +1,24 @@
 package com.codexsoft.bookdatabank.model.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
-public class ReportBookDTO {
+@NoArgsConstructor
+public class BookDetailDto {
+    private Long publisherId;
     private String publisherName;
+    private Long bookId;
     private String bookTitle;
+    private String isbn;
     private String language;
     private Integer printLength;
     private LocalDate publicationDate;
-    private String authors;
+    private String coverImageUrl;
+    private List<AuthorDto> authors;
 }

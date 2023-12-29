@@ -1,9 +1,9 @@
 package com.codexsoft.bookdatabank.repository;
 
-import com.codexsoft.bookdatabank.model.dto.AuthorDTO;
-import com.codexsoft.bookdatabank.model.dto.BookDetailDTO;
-import com.codexsoft.bookdatabank.model.dto.PublisherDTO;
-import com.codexsoft.bookdatabank.model.dto.ReportBookDTO;
+import com.codexsoft.bookdatabank.model.dto.AuthorDto;
+import com.codexsoft.bookdatabank.model.dto.BookDetailDto;
+import com.codexsoft.bookdatabank.model.dto.PublisherDto;
+import com.codexsoft.bookdatabank.model.dto.ReportBookDto;
 import com.codexsoft.bookdatabank.model.entity.Book;
 import jakarta.persistence.Tuple;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,7 +17,7 @@ import java.util.Optional;
 public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificationExecutor<Book> {
 
     @Query(value = """
-            SELECT NEW com.codexsoft.bookdatabank.model.dto.PublisherDTO(
+            SELECT NEW com.codexsoft.bookdatabank.model.dto.PublisherDto(
                             p.id,
                             p.name,
                             a.address,
@@ -30,7 +30,7 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
                             ON b.publisher.id = p.id
                  WHERE b.id = :bookId
             """)
-    Optional<PublisherDTO> findBookPublisher(Long bookId);
+    Optional<PublisherDto> findBookPublisher(Long bookId);
 
 
     @Query(value = """
@@ -49,12 +49,12 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
                    ba.about AS authorAbout
               FROM Book b
                     LEFT JOIN b.authors ba
+                    LEFT JOIN b.publisher bp
              WHERE b.id = :bookId
         """)
     List<Tuple> findBookDetailInternal(Long bookId);
 
-
-    default Optional<BookDetailDTO> findBookDetail(Long bookId) {
+    default Optional<BookDetailDto> findBookDetail(Long bookId) {
 
         var records = findBookDetailInternal(bookId);
 
@@ -63,7 +63,7 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
 
         var firstRecord = records.get(0);
 
-        BookDetailDTO result = new BookDetailDTO();
+        BookDetailDto result = new BookDetailDto();
 
         result.setPublisherId(firstRecord.get("publisherId", Long.class));
         result.setPublisherName(firstRecord.get("publisherName", String.class));
@@ -75,14 +75,17 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
         result.setPublicationDate(firstRecord.get("publicationDate", LocalDate.class));
         result.setCoverImageUrl(firstRecord.get("coverImageUrl", String.class));
 
-        List<AuthorDTO> authors = records.stream().map(t -> {
-            AuthorDTO author = new AuthorDTO();
-            author.setId(t.get("authorId", Long.class));
-            author.setName(t.get("authorName", String.class));
-            author.setSurname(t.get("authorSurname", String.class));
-            author.setAbout(t.get("authorAbout", String.class));
-            return author;
-        }).toList();
+        List<AuthorDto> authors = records
+                .stream()
+                .map(t -> {
+                    AuthorDto author = new AuthorDto();
+                    author.setId(t.get("authorId", Long.class));
+                    author.setName(t.get("authorName", String.class));
+                    author.setSurname(t.get("authorSurname", String.class));
+                    author.setAbout(t.get("authorAbout", String.class));
+                    return author;
+                })
+                .toList();
 
         result.setAuthors(authors);
 
@@ -91,7 +94,7 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
 
 
     @Query("""
-            SELECT NEW com.codexsoft.bookdatabank.model.dto.ReportBookDTO(
+            SELECT NEW com.codexsoft.bookdatabank.model.dto.ReportBookDto(
                             COALESCE(p.name, 'UNSPECIFIED'),
                             b.title,
                             b.language,
@@ -106,5 +109,5 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
                                       FROM b.authors ba
                 ) AS booksAuthors
             """)
-    List<ReportBookDTO> getAllBookReport();
+    List<ReportBookDto> getAllBookReport();
 }

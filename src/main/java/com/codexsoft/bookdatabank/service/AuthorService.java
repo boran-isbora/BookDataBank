@@ -1,8 +1,8 @@
 package com.codexsoft.bookdatabank.service;
 
 import com.codexsoft.bookdatabank.mapper.AuthorMapper;
-import com.codexsoft.bookdatabank.model.dto.AuthorBookDTO;
-import com.codexsoft.bookdatabank.model.dto.AuthorDTO;
+import com.codexsoft.bookdatabank.model.dto.AuthorBookDto;
+import com.codexsoft.bookdatabank.model.dto.AuthorDto;
 import com.codexsoft.bookdatabank.repository.AuthorRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class AuthorService {
     private final AuthorMapper authorMapper;
 
     @Transactional(readOnly = true)
-    public List<AuthorDTO> getAuthors() {
+    public List<AuthorDto> getAuthors() {
 
         var authors = authorRepository.findAll();
 
@@ -27,7 +27,7 @@ public class AuthorService {
     }
 
     @Transactional(readOnly = true)
-    public List<AuthorDTO> getAuthors(Integer pageNumber, Integer pageSize) {
+    public List<AuthorDto> getAuthors(Integer pageNumber, Integer pageSize) {
 
         var authors = authorRepository.getAuthors(pageNumber, pageSize);
 
@@ -35,7 +35,7 @@ public class AuthorService {
     }
 
     @Transactional(readOnly = true)
-    public AuthorDTO getAuthor(Long authorId) {
+    public AuthorDto getAuthor(Long authorId) {
 
         var author = authorRepository.findById(authorId)
                 .orElseThrow(() -> new EntityNotFoundException("Author not found!"));
@@ -43,28 +43,28 @@ public class AuthorService {
         return authorMapper.map(author);
     }
 
-    public List<AuthorBookDTO> getAuthorBooks(Long authorId) {
+    public List<AuthorBookDto> getAuthorBooks(Long authorId) {
 
         return authorRepository.findAuthorBooks(authorId);
     }
 
-    public Long createAuthor(AuthorDTO authorDTO) {
+    public Long createAuthor(AuthorDto authorDto) {
 
-        var author = authorMapper.map(authorDTO);
+        var author = authorMapper.map(authorDto);
 
         authorRepository.save(author);
 
         return author.getId();
     }
 
-    public void updateAuthor(Long authorId, AuthorDTO authorDTO) {
+    public void updateAuthor(Long authorId, AuthorDto authorDto) {
 
         var author = authorRepository.findById(authorId)
                 .orElseThrow(() -> new EntityNotFoundException("Author not found!"));
 
-        author.setName(authorDTO.getName());
-        author.setSurname(authorDTO.getSurname());
-        author.setAbout(authorDTO.getAbout());
+        author.setName(authorDto.getName());
+        author.setSurname(authorDto.getSurname());
+        author.setAbout(authorDto.getAbout());
 
         authorRepository.save(author);
     }

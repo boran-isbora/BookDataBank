@@ -2,16 +2,15 @@ package com.codexsoft.bookdatabank.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class AuthorDTO {
+public class PublisherDto {
     private Long id;
     private String name;
-    private String surname;
-    private String about;
+    private String address;
+    private String city;
+    private String country;
 }

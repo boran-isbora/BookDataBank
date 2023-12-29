@@ -29,25 +29,25 @@ public class BookController {
     private final BookMapper bookMapper;
 
     @GetMapping("/page")
-    public ResponseEntity<BookPageDTO> getBooks(@RequestParam(required = false, name = "lang") String language,
-                                                @RequestParam(required = false, name = "publication_date") LocalDate afterPublicationDate,
-                                                @PageableDefault(page = 0, size = 4) @SortDefault.SortDefaults({@SortDefault(sort = "publicationDate", direction = Sort.Direction.DESC)}) Pageable pageable) {
+    public ResponseEntity<PageDto<BookDto>> getBook(@RequestParam(required = false, name = "language") String language,
+                                           @RequestParam(required = false, name = "publication_date") LocalDate minPublicationDate,
+                                           @PageableDefault(page = 0, size = 4) @SortDefault.SortDefaults({@SortDefault(sort = "publicationDate", direction = Sort.Direction.DESC)}) Pageable pageable) {
 
-        var bookFilterDTO = new BookFilterDTO(language, afterPublicationDate, pageable);
+        var bookFilterDto = new BookFilterDto(language, minPublicationDate, pageable);
 
-        var response = bookService.getBooks(bookFilterDTO);
+        var response = bookService.getBooks(bookFilterDto);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/{bookId}")
-    public ResponseEntity<BookDTO> getBook(@PathVariable Long bookId) {
+    public ResponseEntity<BookDto> getBook(@PathVariable Long bookId) {
 
         try {
 
-            var bookDTO = bookService.getBook(bookId);
+            var bookDto = bookService.getBook(bookId);
 
-            return new ResponseEntity<>(bookDTO, HttpStatus.OK);
+            return new ResponseEntity<>(bookDto, HttpStatus.OK);
 
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -55,7 +55,7 @@ public class BookController {
     }
 
     @GetMapping("/{bookId}/publisher")
-    public ResponseEntity<PublisherDTO> getBookPublisher(@PathVariable Long bookId) {
+    public ResponseEntity<PublisherDto> getBookPublisher(@PathVariable Long bookId) {
 
         return bookService.getBookPublisher(bookId)
                 .map(book -> new ResponseEntity<>(book, HttpStatus.OK))
@@ -63,11 +63,11 @@ public class BookController {
     }
 
     @GetMapping("/{bookId}/authors")
-    public ResponseEntity<List<AuthorDTO>> getBookAuthors(@PathVariable Long bookId) {
+    public ResponseEntity<List<AuthorDto>> getBookAuthors(@PathVariable Long bookId) {
 
         try {
 
-            List<AuthorDTO> authors = bookService.getBookAuthors(bookId);
+            List<AuthorDto> authors = bookService.getBookAuthors(bookId);
 
             return new ResponseEntity<>(authors, HttpStatus.OK);
 
@@ -78,7 +78,7 @@ public class BookController {
     }
 
     @GetMapping("/{bookId}/book-detail")
-    public ResponseEntity<BookDetailDTO> getBookDetail(@PathVariable Long bookId) {
+    public ResponseEntity<BookDetailDto> getBookDetail(@PathVariable Long bookId) {
 
         return bookService.getBookDetail(bookId)
                 .map(book -> new ResponseEntity<>(book, HttpStatus.OK))
@@ -88,9 +88,9 @@ public class BookController {
     @PostMapping
     public ResponseEntity<Long> createBook(@Valid @RequestBody BookRequest bookRequest) {
 
-        var bookDTO = bookMapper.map(bookRequest);
+        var bookDto = bookMapper.map(bookRequest);
 
-        Long response = bookService.createBook(bookDTO);
+        Long response = bookService.createBook(bookDto);
 
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -98,10 +98,10 @@ public class BookController {
     @PutMapping("/{bookId}")
     public ResponseEntity<Void> updateBook(@PathVariable Long bookId, @Valid @RequestBody BookRequest bookRequest) {
 
-        var bookDTO = bookMapper.map(bookRequest);
+        var bookDto = bookMapper.map(bookRequest);
 
         try {
-            bookService.updateBook(bookId, bookDTO);
+            bookService.updateBook(bookId, bookDto);
         } catch (EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

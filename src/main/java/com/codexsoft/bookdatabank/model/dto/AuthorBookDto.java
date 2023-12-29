@@ -7,9 +7,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class PublisherBookDTO {
-    private Long publisherId;
-    private String publisherName;
+public class AuthorBookDto {
+    private Long authorId;
+    private String authorName;
+    private String authorSurname;
     private Long bookId;
     private String bookTitle;
     private String bookCoverImageUrl;

@@ -1,6 +1,6 @@
 package com.codexsoft.bookdatabank.controller;
 
-import com.codexsoft.bookdatabank.model.dto.ReportBookDTO;
+import com.codexsoft.bookdatabank.model.dto.ReportBookDto;
 import com.codexsoft.bookdatabank.service.ReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,9 +17,9 @@ public class ReportController {
     private final ReportService reportService;
 
     @GetMapping("/books")
-    public ResponseEntity<List<ReportBookDTO>> geReportAllBooks() {
+    public ResponseEntity<List<ReportBookDto>> geReportAllBooks() {
 
-        List<ReportBookDTO> reportBooks = reportService.geReportAllBooks();
+        List<ReportBookDto> reportBooks = reportService.geReportAllBooks();
 
         return new ResponseEntity<>(reportBooks, HttpStatus.OK);
     }

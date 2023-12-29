@@ -1,8 +1,8 @@
 package com.codexsoft.bookdatabank.service;
 
 import com.codexsoft.bookdatabank.mapper.PublisherAddressMapper;
-import com.codexsoft.bookdatabank.model.dto.PublisherBookDTO;
-import com.codexsoft.bookdatabank.model.dto.PublisherDTO;
+import com.codexsoft.bookdatabank.model.dto.PublisherBookDto;
+import com.codexsoft.bookdatabank.model.dto.PublisherDto;
 import com.codexsoft.bookdatabank.model.entity.Publisher;
 import com.codexsoft.bookdatabank.repository.PublisherRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,30 +19,30 @@ public class PublisherService {
     private final PublisherRepository publisherRepository;
     private final PublisherAddressMapper publisherAddressMapper;
 
-    public List<PublisherDTO> getPublishers() {
+    public List<PublisherDto> getPublishers() {
 
         return publisherRepository.findPublisher();
     }
 
-    public Optional<PublisherDTO> getPublisher(Long publisherId) {
+    public Optional<PublisherDto> getPublisher(Long publisherId) {
 
         return publisherRepository.findPublisher(publisherId);
     }
 
-    public List<PublisherBookDTO> getPublisherBooks(Long publisherId) {
+    public List<PublisherBookDto> getPublisherBooks(Long publisherId) {
 
         return publisherRepository.findPublisherBooks(publisherId);
     }
 
 
-    public Long createPublisher(PublisherDTO publisherDTO) {
+    public Long createPublisher(PublisherDto publisherDto) {
 
         var publisher = new Publisher();
-        publisher.setName(publisherDTO.getName());
+        publisher.setName(publisherDto.getName());
 
-        if(publisherDTO.getAddress() != null || publisherDTO.getCity() != null || publisherDTO.getCountry() != null) {
+        if(publisherDto.getAddress() != null || publisherDto.getCity() != null || publisherDto.getCountry() != null) {
 
-            var publisherAddress = publisherAddressMapper.map(publisherDTO);
+            var publisherAddress = publisherAddressMapper.map(publisherDto);
 
             publisher.setPublisherAddress(publisherAddress);
         }
@@ -53,25 +53,25 @@ public class PublisherService {
     }
 
 
-    public void updatePublisher(Long publisherId, PublisherDTO publisherDTO) {
+    public void updatePublisher(Long publisherId, PublisherDto publisherDto) {
 
         var publisher = publisherRepository.findById(publisherId)
                 .orElseThrow(() -> new EntityNotFoundException("Publisher not found!"));
 
-        publisher.setName(publisherDTO.getName());
+        publisher.setName(publisherDto.getName());
 
         if(publisher.getPublisherAddress() != null) {
 
-            var publisherAddress = publisher.getPublisherAddress();
+            var address = publisher.getPublisherAddress();
 
-            publisherAddress.setAddress(publisherDTO.getAddress());
-            publisherAddress.setCity(publisherDTO.getCity());
-            publisherAddress.setCountry(publisherDTO.getCountry());
+            address.setAddress(publisherDto.getAddress());
+            address.setCity(publisherDto.getCity());
+            address.setCountry(publisherDto.getCountry());
 
-        } else if(publisherDTO.getAddress() != null || publisherDTO.getCity() != null || publisherDTO.getCountry() != null) {
+        } else if(publisherDto.getAddress() != null || publisherDto.getCity() != null || publisherDto.getCountry() != null) {
 
-            var newPublisherAddress =  publisherAddressMapper.map(publisherDTO);
-            publisher.setPublisherAddress(newPublisherAddress);
+            var address =  publisherAddressMapper.map(publisherDto);
+            publisher.setPublisherAddress(address);
         }
 
         publisherRepository.save(publisher);

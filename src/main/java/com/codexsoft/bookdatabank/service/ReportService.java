@@ -1,6 +1,6 @@
 package com.codexsoft.bookdatabank.service;
 
-import com.codexsoft.bookdatabank.model.dto.ReportBookDTO;
+import com.codexsoft.bookdatabank.model.dto.ReportBookDto;
 import com.codexsoft.bookdatabank.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,11 +14,11 @@ public class ReportService {
 
     private final BookRepository bookRepository;
 
-    public List<ReportBookDTO> geReportAllBooks() {
+    public List<ReportBookDto> geReportAllBooks() {
 
-        var reportBookDTOS = bookRepository.getAllBookReport();
-        reportBookDTOS.sort(Comparator.comparing(ReportBookDTO::getPublicationDate).reversed());
-
-        return reportBookDTOS;
+        return bookRepository.getAllBookReport()
+                .stream()
+                .sorted(Comparator.comparing(ReportBookDto::getPublicationDate).reversed())
+                .toList();
     }
 }

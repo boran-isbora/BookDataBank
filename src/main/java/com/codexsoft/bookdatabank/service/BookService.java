@@ -29,33 +29,33 @@ public class BookService {
     private final AuthorMapper authorMapper;
 
     @Transactional(readOnly = true)
-    public BookPageDTO getBooks(BookFilterDTO bookFilterDTO) {
+    public PageDto<BookDto> getBooks(BookFilterDto bookFilterDto) {
 
         Specification<Book> specification = Specification.where(null);
 
-        if(bookFilterDTO.getLanguage() != null && !bookFilterDTO.getLanguage().isEmpty()) {
-            specification = specification.and(BookSpecification.hasLanguageEqualTo(bookFilterDTO.getLanguage()));
+        if(bookFilterDto.getLanguage() != null && !bookFilterDto.getLanguage().isEmpty()) {
+            specification = specification.and(BookSpecification.hasLanguageEqualTo(bookFilterDto.getLanguage()));
         }
 
-        if(bookFilterDTO.getAfterPublicationDate() != null) {
-            specification = specification.and(BookSpecification.hasPublicationDateGreaterThanOrEqualTo(bookFilterDTO.getAfterPublicationDate()));
+        if(bookFilterDto.getMinPublicationDate() != null) {
+            specification = specification.and(BookSpecification.hasPublicationDateGreaterThanOrEqualTo(bookFilterDto.getMinPublicationDate()));
         }
 
-        Page<Book> pageBook = bookRepository.findAll(specification, bookFilterDTO.getPageable());
+        Page<Book> pageBook = bookRepository.findAll(specification, bookFilterDto.getPageable());
 
-        List<BookDTO> bookDTOS = pageBook.map(bookMapper::map).getContent();
+        List<BookDto> bookDtos = pageBook.map(bookMapper::map).getContent();
 
-        BookPageDTO response = new BookPageDTO();
+        PageDto<BookDto> response = new PageDto<BookDto>();
         response.setTotalItems(pageBook.getTotalElements());
         response.setTotalPages(pageBook.getTotalPages());
         response.setCurrentPage(pageBook.getNumber());
-        response.setBookDTOS(bookDTOS);
+        response.setList(bookDtos);
 
         return response;
     }
 
     @Transactional(readOnly = true)
-    public BookDTO getBook(Long bookId) {
+    public BookDto getBook(Long bookId) {
 
         var book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("Book not found!"));
@@ -63,13 +63,13 @@ public class BookService {
         return bookMapper.map(book);
     }
 
-    public Optional<PublisherDTO> getBookPublisher(Long bookId) {
+    public Optional<PublisherDto> getBookPublisher(Long bookId) {
 
         return bookRepository.findBookPublisher(bookId);
     }
 
     @Transactional(readOnly = true)
-    public List<AuthorDTO> getBookAuthors(Long bookId) {
+    public List<AuthorDto> getBookAuthors(Long bookId) {
 
         var book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("Book not found!"));
@@ -79,32 +79,31 @@ public class BookService {
         return authorMapper.map(authors);
     }
 
-    public Optional<BookDetailDTO> getBookDetail(Long bookId) {
+    public Optional<BookDetailDto> getBookDetail(Long bookId) {
 
         return bookRepository.findBookDetail(bookId);
     }
 
-    public Long createBook(BookDTO bookDTO) {
+    public Long createBook(BookDto bookDto) {
 
-        Book book = bookMapper.map(bookDTO);
+        Book book = bookMapper.map(bookDto);
 
         bookRepository.save(book);
 
         return book.getId();
     }
 
-    public void updateBook(Long bookId, BookDTO bookDTO) {
+    public void updateBook(Long bookId, BookDto bookDto) {
 
         var book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("Book not found!"));
 
-
-        book.setTitle(bookDTO.getTitle());
-        book.setCoverImageUrl(bookDTO.getCoverImageUrl());
-        book.setIsbn(bookDTO.getIsbn());
-        book.setPublicationDate(bookDTO.getPublicationDate());
-        book.setLanguage(bookDTO.getLanguage());
-        book.setPrintLength(bookDTO.getPrintLength());
+        book.setTitle(bookDto.getTitle());
+        book.setCoverImageUrl(bookDto.getCoverImageUrl());
+        book.setIsbn(bookDto.getIsbn());
+        book.setPublicationDate(bookDto.getPublicationDate());
+        book.setLanguage(bookDto.getLanguage());
+        book.setPrintLength(bookDto.getPrintLength());
 
         bookRepository.save(book);
     }
