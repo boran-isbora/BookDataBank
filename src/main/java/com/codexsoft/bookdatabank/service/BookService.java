@@ -45,7 +45,7 @@ public class BookService {
 
         List<BookDto> bookDtos = pageBook.map(bookMapper::map).getContent();
 
-        PageDto<BookDto> response = new PageDto<BookDto>();
+        PageDto<BookDto> response = new PageDto<>();
         response.setTotalItems(pageBook.getTotalElements());
         response.setTotalPages(pageBook.getTotalPages());
         response.setCurrentPage(pageBook.getNumber());

@@ -4,34 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1d240776-42be-4911-93db-6bdc4e112b55" name="Changes" comment="refactor repository transaction">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/controller/AuthorController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/controller/AuthorController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/controller/BookController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/controller/BookController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/controller/PublisherController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/controller/PublisherController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/controller/ReportController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/controller/ReportController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/mapper/AuthorMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/mapper/AuthorMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/mapper/BookMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/mapper/BookMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/mapper/PublisherAddressMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/mapper/PublisherAddressMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/mapper/PublisherMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/mapper/PublisherMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/model/dto/AuthorBookDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/model/dto/AuthorBookDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/model/dto/AuthorDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/model/dto/AuthorDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/model/dto/BookDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/model/dto/BookDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/model/dto/BookDetailDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/model/dto/BookDetailDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/model/dto/BookFilterDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/model/dto/BookFilterDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/model/dto/BookPageDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/model/dto/PageDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/model/dto/PublisherBookDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/model/dto/PublisherBookDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/model/dto/PublisherDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/model/dto/PublisherDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/model/dto/ReportBookDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/model/dto/ReportBookDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/repository/AuthorRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/repository/AuthorRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/repository/BookRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/repository/BookRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/repository/PublisherRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/repository/PublisherRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/repository/customized/CustomizedAuthorRepositoryImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/repository/customized/CustomizedAuthorRepositoryImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/service/AuthorService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/service/AuthorService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/service/BookService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/service/BookService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/service/PublisherService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/service/PublisherService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/service/ReportService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/codexsoft/bookdatabank/service/ReportService.java" afterDir="false" />
-    </list>
+    <list default="true" id="1d240776-42be-4911-93db-6bdc4e112b55" name="Changes" comment="general refactor" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -157,7 +130,15 @@
       <option name="project" value="LOCAL" />
       <updated>1703675464669</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="general refactor">
+      <option name="closed" value="true" />
+      <created>1703869403196</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1703869403196</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -165,7 +146,8 @@
     <MESSAGE value="refactor" />
     <MESSAGE value="refactor repository" />
     <MESSAGE value="refactor repository transaction" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor repository transaction" />
+    <MESSAGE value="general refactor" />
+    <option name="LAST_COMMIT_MESSAGE" value="general refactor" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
