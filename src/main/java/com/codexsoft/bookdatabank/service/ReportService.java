@@ -14,7 +14,7 @@ public class ReportService {
 
     private final BookRepository bookRepository;
 
-    public List<ReportBookDto> geReportAllBooks() {
+    public List<ReportBookDto> getReportAllBooks() {
 
         return bookRepository.getAllBookReport()
                 .stream()

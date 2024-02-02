@@ -17,9 +17,9 @@ public class ReportController {
     private final ReportService reportService;
 
     @GetMapping("/books")
-    public ResponseEntity<List<ReportBookDto>> geReportAllBooks() {
+    public ResponseEntity<List<ReportBookDto>> getReportAllBooks() {
 
-        List<ReportBookDto> reportBooks = reportService.geReportAllBooks();
+        List<ReportBookDto> reportBooks = reportService.getReportAllBooks();
 
         return new ResponseEntity<>(reportBooks, HttpStatus.OK);
     }
